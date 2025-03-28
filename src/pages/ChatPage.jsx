@@ -20,7 +20,7 @@ export default function ChatPage() {
         {messages.map((msg, i) => (
           <div
             key={i}
-            className={`p-3 rounded-lg border-2 border-gray-400 ${msg.sender === 'AI' ? 'bg-blue-50' : 'bg-gray-50 ml-8'}`}
+            className={`p-3 rounded-lg border-2 border-gray-100 ${msg.sender === 'AI' ? 'bg-blue-50' : 'bg-gray-50 ml-8'}`}
           >
             <div className="font-semibold text-black">
               {msg.sender === 'AI' ? 'AI Analyst' : 'You'}
