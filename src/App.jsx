@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import UploadPage from "../public/UploadPage";
 import ChatPage from "./pages/ChatPage";
 import ReviewPage from "./pages/ReviewPage";
@@ -11,33 +11,55 @@ import SignUp from "./pages/SignUp";
 import HistoryPage from "./pages/HistoryPage";
 import { AuthProvider } from "./components/AuthContext";
 import Profile from "./pages/Profile";
-import SummaryPage from "./pages/Summary"; // ✅ Changed StakeholderPage to SummaryPage
+import SummaryPage from "./pages/Summary";
+import Sidebar from "./components/Sidebar";
+import Collaborate from "./pages/Collaborate";
+import Dashboard from "./pages/Dashboard";
+import Chat from "./pages/Chat";
+
+function Layout() {
+  const location = useLocation();
+  const sidebarRoutes = ["/dashboard", "/collaborate", "/team-chat"];
+  const isSidebarVisible = sidebarRoutes.includes(location.pathname);
+  const isNavbarHidden = sidebarRoutes.includes(location.pathname); // Hide Navbar for these routes
+
+  return (
+    <div className="min-h-screen flex bg-gray-50">
+      {isSidebarVisible && <Sidebar />} {/* ✅ Show Sidebar only for dashboard, collaborate, chat */}
+      <div className="flex-grow flex flex-col">
+        {!isNavbarHidden && <Navigation />} {/* ✅ Hide Navbar for dashboard, collaborate, chat */}
+        <main className="container mx-auto px-4 py-8 flex-grow">
+          <div className="bg-white shadow-md rounded-lg p-6">
+            <Routes>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/collaborate" element={<Collaborate />} />
+              <Route path="/team-chat" element={<Chat />} />
+
+              <Route path="/" element={<UploadPage />} />
+              <Route path="/upload" element={<UploadPage />} />
+              <Route path="/chat" element={<ChatPage />} />
+              <Route path="/review" element={<ReviewPage />} />
+              <Route path="/export" element={<ExportPage />} />
+              <Route path="/summary" element={<SummaryPage />} />
+              <Route path="/history" element={<HistoryPage />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/profile" element={<Profile />} />
+            </Routes>
+          </div>
+        </main>
+        {!isNavbarHidden && <Footer />}  {/* ✅ Hide Footer for dashboard, collaborate, chat */}
+        <Toaster position="bottom-right" />
+      </div>
+    </div>
+  );
+}
 
 function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="min-h-screen flex flex-col bg-gray-50">
-          <Navigation />
-          <main className="container mx-auto px-4 py-8 flex-grow">
-            <div className="bg-white shadow-md rounded-lg p-6">
-              <Routes>
-                <Route path="/" element={<UploadPage />} />
-                <Route path="/upload" element={<UploadPage />} />
-                <Route path="/chat" element={<ChatPage />} />
-                <Route path="/review" element={<ReviewPage />} />
-                <Route path="/export" element={<ExportPage />} />
-                <Route path="/summary" element={<SummaryPage />} /> {/* ✅ Fixed here */}
-                <Route path="/history" element={<HistoryPage />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<SignUp />} />
-                <Route path="/profile" element={<Profile />} />
-              </Routes>
-            </div>
-          </main>
-          <Footer />
-          <Toaster position="bottom-right" />
-        </div>
+        <Layout />
       </Router>
     </AuthProvider>
   );

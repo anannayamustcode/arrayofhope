@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from "../components/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Edit, LogOut, Mail, User, Phone, Briefcase, Bug } from 'lucide-react';
@@ -7,10 +7,11 @@ const Profile = () => {
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
 
-  const [name, setName] = useState(currentUser?.name || '');
-  const [job, setJob] = useState(currentUser?.jobTitle || '');
-  const [contact, setContact] = useState(currentUser?.phoneNumber || '');
-  const [email, setEmail] = useState(currentUser?.email || '');
+  // Load data from localStorage or fallback to currentUser
+  const [name, setName] = useState(localStorage.getItem("profileName") || currentUser?.name || '');
+  const [job, setJob] = useState(localStorage.getItem("profileJob") || currentUser?.jobTitle || '');
+  const [contact, setContact] = useState(localStorage.getItem("profileContact") || currentUser?.phoneNumber || '');
+  const [email, setEmail] = useState(localStorage.getItem("profileEmail") || currentUser?.email || '');
 
   const [isEditing, setIsEditing] = useState({
     name: false,
@@ -18,6 +19,14 @@ const Profile = () => {
     contact: false,
     email: false
   });
+
+  useEffect(() => {
+    // Save the current state to localStorage whenever values change
+    localStorage.setItem("profileName", name);
+    localStorage.setItem("profileJob", job);
+    localStorage.setItem("profileContact", contact);
+    localStorage.setItem("profileEmail", email);
+  }, [name, job, contact, email]);
 
   const handleLogout = () => {
     logout();
@@ -31,7 +40,8 @@ const Profile = () => {
     }));
   };
 
-  const handleSave = (field) => {
+  const handleSave = (field, value) => {
+    localStorage.setItem(`profile${field.charAt(0).toUpperCase() + field.slice(1)}`, value);
     toggleEdit(field);
   };
 
@@ -43,23 +53,24 @@ const Profile = () => {
           {field === 'job' && <Briefcase className="text-black" />}
           {field === 'contact' && <Phone className="text-black" />}
           {field === 'email' && <Mail className="text-black" />}
-          
+
           {isEditing[field] ? (
             <input
               type="text"
               value={value}
               onChange={(e) => setValue(e.target.value)}
+              onBlur={() => handleSave(field, value)}
               className="border-b border-black focus:outline-none focus:border-black bg-transparent text-black"
             />
           ) : (
             <span className="text-black">{value}</span>
           )}
         </div>
-        
+
         <button 
-          onClick={() => isEditing[field] ? handleSave(field) : toggleEdit(field)}
+          onClick={() => toggleEdit(field)}
           className="!bg-gray-100 text-black hover:text-gray-600 "
-          >
+        >
           <Edit className="w-5 h-5" />
         </button>
       </div>

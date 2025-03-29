@@ -11,6 +11,7 @@ export default function Navigation() {
     { path: "/chat", name: "AI Analysis" },
     { path: "/review", name: "Review" },
     { path: "/export", name: "Export" },
+    { path: "/collaborate", name: "Collaborate" }, // ✅ Added Collaborate
   ];
 
   return (
