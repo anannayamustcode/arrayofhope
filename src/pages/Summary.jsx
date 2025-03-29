@@ -10,9 +10,9 @@ export default function SummaryPage () {
   const [input, setInput] = useState("");
 
   const roles = {
-    product: { name: "Product Manager", color: "bg-blue-100 text-blue-800" },
-    legal: { name: "Legal Team", color: "bg-purple-100 text-purple-800" },
-    security: { name: "Security", color: "bg-red-100 text-red-800" }
+    product: { name: "Product Manager", color: "!bg-gray-300 text-blue-800" },
+    legal: { name: "Legal Team", color: "!bg-gray-300 text-purple-800" },
+    security: { name: "Security", color: "!bg-gray-300 text-red-800" }
   };
 
   const handleResponse = () => {
