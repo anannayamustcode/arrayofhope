@@ -5,6 +5,7 @@ import { AlertCircle, AlertTriangle, ChevronDown, ChevronUp, Menu } from 'lucide
 import ComplianceAlert from '../components/ComplianceAlert';
 import PriorityBadge from '../components/PriorityBadge';
 import { Link } from "react-router-dom";
+import ExportPage from './ExportPage';
 
 const ItemType = 'REQUIREMENT';
 
@@ -88,9 +89,11 @@ export default function ReviewPage() {
               <div className="h-full bg-blue-600 rounded-l-full" style={{ width: `${completionStatus}%` }}></div>
               <span className="ml-4 text-sm font-medium">{completionStatus}% Requirements Prioritized</span>
             </div>
-            <button className="!bg-[#012169] text-white px-4 py-2 rounded hover:bg-[#013169] transition-colors">
-              Save Progress
-            </button>
+            <Link to="/export">
+              <button className="!bg-[#012169] text-white px-4 py-2 rounded hover:bg-[#013169] transition-colors">
+                Proceed
+              </button>
+            </Link>
           </div>
         </div>
 
@@ -303,6 +306,7 @@ const PriorityCategory = ({ category, items, onDrop, onRemove, isExpanded, onTog
             </div>
           )}
         </div>
+        
       )}
     </div>
   );

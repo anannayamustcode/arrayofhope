@@ -43,12 +43,12 @@ export default function ExportPage() {
             {/* ✅ Navigate to History Page */}
             <button 
               onClick={() => navigate("/history")} 
-              className="bg-[#012169] text-white px-6 py-3 rounded-lg hover:bg-[#001a4d] transition"
+              className="!bg-[#012169] text-white px-6 py-3 rounded-lg hover:bg-[#001a4d] transition"
             >
               History
             </button>
 
-            <button className="bg-[#012169] text-white px-6 py-3 rounded-lg hover:bg-[#001a4d] transition">
+            <button className="!bg-[#012169] text-white px-6 py-3 rounded-lg hover:bg-[#001a4d] transition">
               Export
             </button>
           </div>
