@@ -203,10 +203,10 @@ export default function FileUploader() {
       {/* Summarize Button */}
       <div className="mt-6 flex justify-center">
         <button
-          className="bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 transition"
-          onClick={() => navigate("/summary")}
+          className="!bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 transition"
+          onClick={() => navigate("/review")}
         >
-          Summarize
+          Review
         </button>
       </div>
     </div>

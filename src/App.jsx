@@ -11,7 +11,7 @@ import SignUp from "./pages/SignUp";
 import HistoryPage from "./pages/HistoryPage";
 import { AuthProvider } from "./components/AuthContext";
 import Profile from "./pages/Profile";
-import SummaryPage from "./pages/Summary";
+import SummaryPage from "./pages/Conflicts";
 import Sidebar from "./components/Sidebar";
 import Collaborate from "./pages/collaborate/Collaborate";
 import Dashboard from "./pages/collaborate/Dashboard";
