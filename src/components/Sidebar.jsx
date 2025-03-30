@@ -13,6 +13,8 @@ const Sidebar = () => {
         </Link>
         <Link to="/collaborate" className="flex items-center space-x-2 p-2 hover:bg-gray-700 rounded">
           <Users /> <span>Collaborate</span>
+        </Link>      <Link to="/flowchart" className="flex items-center space-x-2 p-2 hover:bg-gray-700 rounded">
+          <Users /> <span>Flowchart</span>
         </Link>
         <Link to="/chat" className="flex items-center space-x-2 p-2 hover:bg-gray-700 rounded">
           <MessageSquare /> <span>Team Chat</span>

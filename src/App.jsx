@@ -13,9 +13,10 @@ import { AuthProvider } from "./components/AuthContext";
 import Profile from "./pages/Profile";
 import SummaryPage from "./pages/Summary";
 import Sidebar from "./components/Sidebar";
-import Collaborate from "./pages/Collaborate";
-import Dashboard from "./pages/Dashboard";
+import Collaborate from "./pages/collaborate/Collaborate";
+import Dashboard from "./pages/collaborate/Dashboard";
 import Chat from "./pages/Chat";
+import FlowchartPage from "./pages/collaborate/Flowchart";
 
 function Layout() {
   const location = useLocation();
@@ -45,6 +46,7 @@ function Layout() {
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<SignUp />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/flowchart" element={<FlowchartPage />} />
             </Routes>
           </div>
         </main>

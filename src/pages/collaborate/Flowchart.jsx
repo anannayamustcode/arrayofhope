@@ -13,7 +13,7 @@ const initialElements = [
 function FlowchartPage() {
   return (
     <div className="h-screen w-full bg-gray-100 p-4">
-      <h1 className="text-xl font-bold mb-4">Flowchart Builder</h1>
+      <h1 className="text-black text-xl font-bold mb-4">Flowchart Builder</h1>
       <div className="h-[80vh] border border-gray-300 rounded-lg overflow-hidden">
         <ReactFlow elements={initialElements}>
           <MiniMap />
