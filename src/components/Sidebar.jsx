@@ -3,10 +3,10 @@ import {
   LayoutDashboard, 
   Users, 
   MessageSquare, 
-  Calendar,
   GitBranch,
   FileText
 } from "lucide-react";
+import { Calendar as CalendarIcon } from "lucide-react";
 
 const Sidebar = () => {
   const navItems = [
@@ -15,8 +15,8 @@ const Sidebar = () => {
     { path: "/summary", icon: <FileText size={20} />, label: "Negotiation" },
     { path: "/flowchart", icon: <GitBranch size={20} />, label: "Flowchart" },
     { path: "/chat", icon: <MessageSquare size={20} />, label: "Team Chat" },
-    { path: "/calendar", icon: <Calendar size={20} />, label: "Calendar" }
-  ];
+    { path: "/calendar", icon: <CalendarIcon size={20} />, label: "Calendar" }
+];
 
   return (
     <div className="fixed top-0 left-0 h-full w-64 bg-gray-900 !text-white flex flex-col p-4 shadow-lg z-10">

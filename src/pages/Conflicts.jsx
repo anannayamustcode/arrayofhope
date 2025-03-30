@@ -33,8 +33,8 @@ export default function SummaryPage () {
   };
 
   return (
-    <div className="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold text-[#012169] mb-6">Negotiation</h1>
+    <div className="max--4xl  mx-75 bg-white p-6 rounded-lg">
+      <h1 className="text-3xl font-bold text-[#012169] mb-9">Negotiation</h1>
 
       {/* Role Selection */}
       <div className="flex gap-2 mb-6">
@@ -77,7 +77,7 @@ export default function SummaryPage () {
           onKeyDown={(e) => e.key === "Enter" && handleResponse()}
         />
         <button 
-          className="bg-[#012169] text-white px-4 py-2 rounded-lg hover:bg-[#011a4b] transition"
+          className="!bg-[#012169] text-white px-4 py-2 rounded-lg hover:bg-[#011a4b] transition"
           onClick={handleResponse}
         >
           Send
