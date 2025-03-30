@@ -1,23 +1,7 @@
 import { Link } from "react-router-dom";
-import { 
-  LayoutDashboard, 
-  Users, 
-  MessageSquare, 
-  GitBranch,
-  FileText
-} from "lucide-react";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { LayoutDashboard, Users, MessageSquare, Calendar, ArrowLeft } from "lucide-react";
 
 const Sidebar = () => {
-  const navItems = [
-    { path: "/dashboard", icon: <LayoutDashboard size={20} />, label: "Dashboard" },
-    { path: "/collaborate", icon: <Users size={20} />, label: "Collaborate" },
-    { path: "/summary", icon: <FileText size={20} />, label: "Negotiation" },
-    { path: "/flowchart", icon: <GitBranch size={20} />, label: "Flowchart" },
-    { path: "/chat", icon: <MessageSquare size={20} />, label: "Team Chat" },
-    { path: "/calendar", icon: <CalendarIcon size={20} />, label: "Calendar" }
-];
-
   return (
     <div className="fixed top-0 left-0 h-full w-64 bg-gray-900 text-white flex flex-col p-4 space-y-4 z-10">
       <div className="flex items-center space-x-2">
