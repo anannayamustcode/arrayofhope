@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../../components/Sidebar";
 
 const teamMembers = [
   { id: 1, name: "Alice Johnson", role: "Project Manager", status: "Online" },
