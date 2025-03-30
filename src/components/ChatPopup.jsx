@@ -18,7 +18,7 @@ export default function ChatPopup() {
     <>
       {/* Chat Open Button */}
       <button
-        className="fixed bottom-6 right-6 !bg-[#012169] text-white p-4 !rounded-full shadow-lg hover:bg-[#0038a8] transition-all"
+        className="fixed bottom-14 right-6 !bg-[#012169] text-white p-4 !rounded-full shadow-lg hover:bg-[#0038a8] transition-all"
         onClick={() => setIsOpen(true)}
       >
         💬
