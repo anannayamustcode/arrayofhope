@@ -18,7 +18,7 @@ export default function ChatPopup() {
     <>
       {/* Chat Open Button */}
       <button
-        className="fixed bottom-6 right-6 bg-[#012169] text-white p-4 rounded-full shadow-lg hover:bg-[#0038a8] transition-all"
+        className="fixed bottom-6 right-6 !bg-[#012169] text-white p-4 !rounded-full shadow-lg hover:bg-[#0038a8] transition-all"
         onClick={() => setIsOpen(true)}
       >
         💬
@@ -26,7 +26,7 @@ export default function ChatPopup() {
 
       {/* Chat Sidebar */}
       <div
-        className={`fixed top-0 right-0 h-full w-[30%] max-w-sm bg-white shadow-lg border-l transform ${
+        className={`fixed top-0 right-0 h-full w-[27%] max-w-sm bg-white shadow-lg border-l transform ${
           isOpen ? "translate-x-0" : "translate-x-full"
         } transition-transform duration-300 flex flex-col`}
       >
@@ -69,7 +69,7 @@ export default function ChatPopup() {
           />
           <button
             onClick={handleSend}
-            className="ml-2 bg-[#012169] text-white px-4 py-2 rounded-lg"
+            className="ml-2 !bg-[#012169] text-white px-4 py-2 rounded-lg"
           >
             ➤
           </button>
