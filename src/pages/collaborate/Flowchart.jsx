@@ -196,7 +196,10 @@ const updateNodeColor = (newColor, newTextColor) => {
 
   return (
     <div className="h-screen w-full bg-gray-100 flex flex-col">
+      <div className="flex items-center p-4 bg-white shadow-md">
+        <button onClick={() => navigate(-1)} className="mr-4 px-3 py-1 bg-gray-200 rounded">⬅</button>
       <h1 className="!bg-white text-2xl font-bold p-4  text-black">Flowchart Builder</h1>
+      </div>
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar with controls */}
         <aside className="w-64 bg-white p-4 shadow-lg flex flex-col">
