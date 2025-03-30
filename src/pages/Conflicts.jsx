@@ -34,7 +34,7 @@ export default function SummaryPage () {
 
   return (
     <div className="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold text-[#012169] mb-6">Stakeholder Negotiation</h1>
+      <h1 className="text-2xl font-bold text-[#012169] mb-6">Negotiation</h1>
 
       {/* Role Selection */}
       <div className="flex gap-2 mb-6">
