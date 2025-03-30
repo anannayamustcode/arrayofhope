@@ -17,6 +17,7 @@ import Collaborate from "./pages/collaborate/Collaborate";
 import Dashboard from "./pages/collaborate/Dashboard";
 import Chat from "./pages/Chat";
 import FlowchartPage from "./pages/collaborate/Flowchart";
+import Calendar from "./pages/collaborate/Calendar";
 
 function Layout() {
   const location = useLocation();
@@ -47,6 +48,7 @@ function Layout() {
               <Route path="/signup" element={<SignUp />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/flowchart" element={<FlowchartPage />} />
+              <Route path="/calendar" element={<Calendar />} />
             </Routes>
           </div>
         </main>
