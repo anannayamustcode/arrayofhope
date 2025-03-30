@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { LayoutDashboard, Users, MessageSquare } from "lucide-react";
+import { LayoutDashboard, Users, MessageSquare, Calendar } from "lucide-react";
 
 const Sidebar = () => {
   return (
@@ -19,7 +19,11 @@ const Sidebar = () => {
           className="flex items-center space-x-2 p-2 hover:bg-gray-700 rounded transition-colors"
         >
           <Users /> <span>Collaborate</span>
-        </Link>      <Link to="/flowchart" className="flex items-center space-x-2 p-2 hover:bg-gray-700 rounded">
+        </Link>
+        <Link 
+          to="/flowchart" 
+          className="flex items-center space-x-2 p-2 hover:bg-gray-700 rounded transition-colors"
+        >
           <Users /> <span>Flowchart</span>
         </Link>
         <Link 
@@ -27,6 +31,12 @@ const Sidebar = () => {
           className="flex items-center space-x-2 p-2 hover:bg-gray-700 rounded transition-colors"
         >
           <MessageSquare /> <span>Team Chat</span>
+        </Link>
+        <Link 
+          to="/calendar" 
+          className="flex items-center space-x-2 p-2 hover:bg-gray-700 rounded transition-colors"
+        >
+          <Calendar /> <span>Calendar</span>
         </Link>
       </nav>
     </div>
