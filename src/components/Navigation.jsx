@@ -8,7 +8,6 @@ export default function Navigation() {
 
   const navItems = [
     { path: "/upload", name: "Upload" },
-    { path: "/chat", name: "AI Analysis" },
     { path: "/review", name: "Review" },
     { path: "/export", name: "Export" },
     { path: "/collaborate", name: "Collaborate" }, // ✅ Added Collaborate

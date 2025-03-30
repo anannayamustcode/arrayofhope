@@ -1,8 +1,9 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import { useNavigate } from "react-router-dom";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
+import ChatPopup from "../src/components/ChatPopup";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
@@ -17,38 +18,62 @@ export default function FileUploader() {
   const navigate = useNavigate();
   const containerRef = useRef(null);
 
-  const handleFileUpload = (e) => {
+  // Handle file uploads
+  const handleFileUpload = async (e) => {
     const uploadedFiles = Array.from(e.target.files);
     let newFiles = [...files];
     setError("");
 
+    const formData = new FormData();
     uploadedFiles.forEach((file) => {
       if (file.size > 5 * 1024 * 1024) {
         setError(`"${file.name}" exceeds the 5MB limit.`);
-      } else {
+      } else if (!newFiles.some((f) => f.name === file.name)) {
         const fileType = file.name.split(".").pop().toLowerCase();
         newFiles.push({
           name: file.name,
           type: fileType,
           url: URL.createObjectURL(file),
         });
+
+        // Append to form data for backend upload
+        formData.append("file", file);
       }
     });
 
     setFiles(newFiles);
+
+    try {
+      const response = await fetch("http://localhost:5000/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.message || "Upload failed.");
+      }
+
+      console.log("Upload success:", result);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      setError("Failed to upload file to server.");
+    }
   };
 
+  // Remove file and clean up memory
   const removeFile = (fileName) => {
-    setFiles(files.filter((file) => file.name !== fileName));
+    setFiles((prevFiles) => prevFiles.filter((file) => file.name !== fileName));
     if (previewFile?.name === fileName) setPreviewFile(null);
   };
 
+  // Handle preview selection
   const handlePreview = (file) => {
+    setPreviewFile(file);
     if (file.type === "pdf") {
       setIsLoading(true);
       setPageNumber(1);
     }
-    setPreviewFile(file);
   };
 
   const onDocumentLoadSuccess = ({ numPages }) => {
@@ -57,19 +82,20 @@ export default function FileUploader() {
     setError(null);
   };
 
-  const onDocumentLoadError = (error) => {
-    console.error("PDF error:", error);
-    setError("Failed to load PDF. Please try another file.");
-    setIsLoading(false);
-  };
+  const goToPrevPage = () => setPageNumber((prev) => Math.max(prev - 1, 1));
+  const goToNextPage = () => setPageNumber((prev) => Math.min(prev + 1, numPages));
+  const zoomIn = () => setScale((prev) => Math.min(prev + 0.25, 3.0));
+  const zoomOut = () => setScale((prev) => Math.max(prev - 0.25, 0.5));
 
-  const goToPrevPage = () => setPageNumber(prev => Math.max(prev - 1, 1));
-  const goToNextPage = () => setPageNumber(prev => Math.min(prev + 1, numPages));
-  const zoomIn = () => setScale(prev => Math.min(prev + 0.25, 3.0));
-  const zoomOut = () => setScale(prev => Math.max(prev - 0.25, 0.5));
+  // Cleanup object URLs when files are removed
+  useEffect(() => {
+    return () => {
+      files.forEach((file) => URL.revokeObjectURL(file.url));
+    };
+  }, [files]);
 
   return (
-    <div className="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+    <div className="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-lg relative">
       <h1 className="text-2xl font-bold text-[#012169] mb-4">Upload Files</h1>
 
       {/* File Upload Input */}
@@ -80,7 +106,7 @@ export default function FileUploader() {
           className="hidden"
           id="file-upload"
           onChange={handleFileUpload}
-          accept=".pdf,.png,.jpg,.jpeg"
+          accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt"
         />
         <label
           htmlFor="file-upload"
@@ -88,13 +114,11 @@ export default function FileUploader() {
         >
           Select Files
         </label>
-        <p className="mt-2 text-gray-500">Upload PDF or images (Max 5MB each)</p>
+        <p className="mt-2 text-gray-500">Upload PDF, images, or documents (Max 5MB each)</p>
       </div>
 
       {/* Error Message */}
-      {error && (
-        <div className="mt-4 p-3 bg-red-50 text-red-800 rounded">{error}</div>
-      )}
+      {error && <div className="mt-4 p-3 bg-red-50 text-red-800 rounded">{error}</div>}
 
       {/* File List */}
       <div className="mt-4 border border-gray-200 rounded-lg p-4">
@@ -109,106 +133,39 @@ export default function FileUploader() {
                 onClick={() => handlePreview(file)}
               >
                 <span className="text-black font-medium">{file.name}</span>
-                <button
-                  className="text-red-600 hover:text-red-800"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    removeFile(file.name);
-                  }}
-                >
-                  ✖
-                </button>
+                <div className="flex space-x-3">
+                  <a
+                    href={file.url}
+                    download={file.name}
+                    className="text-blue-600 hover:text-blue-800"
+                  >
+                    ⬇️
+                  </a>
+                  <button
+                    className="text-red-600 hover:text-red-800"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeFile(file.name);
+                    }}
+                  >
+                    ✖
+                  </button>
+                </div>
               </li>
             ))}
           </ul>
         )}
       </div>
 
-      {/* Preview Section */}
-      {previewFile && (
-        <div className="mt-6 p-4 border border-gray-300 rounded-lg bg-gray-50" ref={containerRef}>
-          <h2 className="text-lg font-semibold mb-2 text-black">
-            Preview: {previewFile.name}
-          </h2>
-
-          {previewFile.type === "pdf" ? (
-            <>
-              {isLoading && (
-                <div className="text-center py-4">Loading PDF...</div>
-              )}
-              
-              <div className="flex gap-2 mb-4 flex-wrap">
-                <button
-                  onClick={goToPrevPage}
-                  disabled={pageNumber <= 1 || isLoading}
-                  className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
-                >
-                  Previous
-                </button>
-                <span className="self-center">
-                  Page {pageNumber} of {numPages || "--"}
-                </span>
-                <button
-                  onClick={goToNextPage}
-                  disabled={pageNumber >= (numPages || 0) || isLoading}
-                  className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
-                >
-                  Next
-                </button>
-                <button
-                  onClick={zoomOut}
-                  disabled={isLoading}
-                  className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50 ml-auto"
-                >
-                  Zoom Out
-                </button>
-                <span className="self-center">{(scale * 100).toFixed(0)}%</span>
-                <button
-                  onClick={zoomIn}
-                  disabled={isLoading}
-                  className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
-                >
-                  Zoom In
-                </button>
-              </div>
-
-              <Document
-                file={previewFile.url}
-                onLoadSuccess={onDocumentLoadSuccess}
-                onLoadError={onDocumentLoadError}
-                loading={<div className="text-center py-4">Loading PDF...</div>}
-                className="border border-gray-300 p-2"
-              >
-                <Page
-                  pageNumber={pageNumber}
-                  width={containerRef.current?.clientWidth * 0.9}
-                  scale={scale}
-                  renderTextLayer={false}
-                  renderAnnotationLayer={false}
-                />
-              </Document>
-            </>
-          ) : ["png", "jpg", "jpeg"].includes(previewFile.type) ? (
-            <img
-              src={previewFile.url}
-              alt="Preview"
-              className="max-w-full h-auto rounded"
-            />
-          ) : (
-            <p className="text-black">Cannot preview this file type.</p>
-          )}
-        </div>
-      )}
-
-      {/* Summarize Button */}
+      {/* Review Button */}
       <div className="mt-6 flex justify-center">
-        <button
-          className="!bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 transition"
-          onClick={() => navigate("/review")}
-        >
+        <button className="!bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 transition" onClick={() => navigate("/review")}>
           Review
         </button>
       </div>
+
+      {/* Chat Popup Button */}
+      <ChatPopup/>
     </div>
   );
 }

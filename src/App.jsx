@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import UploadPage from "../public/UploadPage";
-import ChatPage from "./pages/ChatPage";
 import ReviewPage from "./pages/ReviewPage";
 import ExportPage from "./pages/ExportPage";
 import Navigation from "./components/Navigation";
@@ -39,7 +38,6 @@ function Layout() {
 
               <Route path="/" element={<UploadPage />} />
               <Route path="/upload" element={<UploadPage />} />
-              <Route path="/chat" element={<ChatPage />} />
               <Route path="/review" element={<ReviewPage />} />
               <Route path="/export" element={<ExportPage />} />
               <Route path="/summary" element={<SummaryPage />} />
