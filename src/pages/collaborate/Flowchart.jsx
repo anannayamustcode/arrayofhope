@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -25,8 +26,7 @@ const nodeTypes = {
         {data.label}
       </div>
     </div>
-  ),  
-
+  ),
 };
 
 // Initial nodes and edges
@@ -37,8 +37,17 @@ const initialNodes = [
 ];
 
 const initialEdges = [
-  { id: "e1-2", source: "1", target: "2", animated: true },
-  { id: "e2-3", source: "2", target: "3", animated: true },
+  { id: "e1-2", source: "1", target: "2", animated: true, style: { stroke: "#4CAF50" } },
+  { id: "e2-3", source: "2", target: "3", animated: true, style: { stroke: "#2196F3" } },
+];
+
+// Edge types
+const edgeTypes = [
+  { id: "default", label: "Default", stroke: "#555" },
+  { id: "success", label: "Success", stroke: "#4CAF50" },
+  { id: "warning", label: "Warning", stroke: "#FF9800" },
+  { id: "error", label: "Error", stroke: "#F44336" },
+  { id: "dashed", label: "Dashed", stroke: "#555", strokeDasharray: "5,5" },
 ];
 
 // Color palette
@@ -54,11 +63,13 @@ const colorPalette = [
 ];
 
 function FlowchartPage() {
+  const navigate = useNavigate();
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [nodeName, setNodeName] = useState("New Node");
   const [selectedNodeType, setSelectedNodeType] = useState("default");
   const [selectedColor, setSelectedColor] = useState(colorPalette[0]);
+  const [selectedEdgeType, setSelectedEdgeType] = useState(edgeTypes[0]);
   const [isAnimated, setIsAnimated] = useState(true);
   const [selectedNode, setSelectedNode] = useState(null);
   const [selectedEdge, setSelectedEdge] = useState(null);
@@ -70,9 +81,13 @@ function FlowchartPage() {
     const newEdge = {
       ...params,
       animated: isAnimated,
+      style: { 
+        stroke: selectedEdgeType.stroke,
+        strokeDasharray: selectedEdgeType.strokeDasharray,
+      },
     };
     setEdges((eds) => addEdge(newEdge, eds));
-  }, [setEdges, isAnimated]);
+  }, [setEdges, isAnimated, selectedEdgeType]);
 
   // Handle drag-and-drop creation of new nodes
   const onDragOver = useCallback((event) => {
@@ -120,37 +135,48 @@ function FlowchartPage() {
     setSelectedNode(null);
   }, []);
 
-// Update node label
-const updateNodeLabel = (newLabel) => {
-  setNodes((nds) =>
-    nds.map((node) =>
-      node.id === selectedNode?.id
-        ? { ...node, data: { ...node.data, label: newLabel } }
-        : node
-    )
-  );
-};
-
-// Update node color
-const updateNodeColor = (newColor, newTextColor) => {
-  setNodes((nds) =>
-    nds.map((node) =>
-      node.id === selectedNode?.id
-        ? {
-            ...node,
-            data: {
-              ...node.data,
-              color: newColor,
-              textColor: newTextColor || node.data.textColor || "white",
-            },
+  // Update node properties
+  const updateNodeLabel = (newLabel) => {
+    if (selectedNode) {
+      setNodes((nds) =>
+        nds.map((node) => {
+          if (node.id === selectedNode.id) {
+            return {
+              ...node,
+              data: {
+                ...node.data,
+                label: newLabel,
+              },
+            };
           }
-        : node
-    )
-  );
-};
+          return node;
+        })
+      );
+    }
+  };
 
-  // Update edge animation property
-  const updateEdgeAnimation = (animated) => {
+  const updateNodeColor = (newColor, newTextColor) => {
+    if (selectedNode) {
+      setNodes((nds) =>
+        nds.map((node) => {
+          if (node.id === selectedNode.id) {
+            return {
+              ...node,
+              data: {
+                ...node.data,
+                color: newColor,
+                textColor: newTextColor || "white",
+              },
+            };
+          }
+          return node;
+        })
+      );
+    }
+  };
+
+  // Update edge properties
+  const updateEdgeStyle = (stroke, strokeDasharray, animated) => {
     if (selectedEdge) {
       setEdges((eds) =>
         eds.map((edge) => {
@@ -158,6 +184,11 @@ const updateNodeColor = (newColor, newTextColor) => {
             return {
               ...edge,
               animated: animated,
+              style: {
+                ...edge.style,
+                stroke,
+                strokeDasharray,
+              },
             };
           }
           return edge;
@@ -196,7 +227,20 @@ const updateNodeColor = (newColor, newTextColor) => {
 
   return (
     <div className="h-screen w-full bg-gray-100 flex flex-col">
-      <h1 className="!bg-white text-2xl font-bold p-4  text-black">Flowchart Builder</h1>
+      <div className="flex items-center p-4 bg-[#012169] text-white">
+        {/* Back button */}
+        <button 
+          onClick={() => navigate(-1)} 
+          className="mr-4 p-2 rounded hover:bg-[#001a4d] transition-colors"
+          aria-label="Go back"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+          </svg>
+        </button>
+        <h1 className="text-2xl">Interactive Flowchart Builder</h1>
+      </div>
+      
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar with controls */}
         <aside className="w-64 bg-white p-4 shadow-lg flex flex-col">
@@ -242,6 +286,21 @@ const updateNodeColor = (newColor, newTextColor) => {
             ))}
           </div>
           
+          <div className="mb-3">
+            <label className="block text-sm font-medium mb-1">Edge Style:</label>
+            <select
+              value={selectedEdgeType.id}
+              onChange={(e) => setSelectedEdgeType(edgeTypes.find(type => type.id === e.target.value))}
+              className="w-full p-2 border rounded"
+            >
+              {edgeTypes.map((type) => (
+                <option key={type.id} value={type.id}>
+                  {type.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          
           <div className="mb-6">
             <label className="flex items-center">
               <input
@@ -260,23 +319,23 @@ const updateNodeColor = (newColor, newTextColor) => {
               draggable
               onDragStart={(e) => onDragStart(e, selectedNodeType)}
             >
-              Drag
+              Drag to Canvas
             </div>
             
             <button
               onClick={deleteSelected}
               disabled={!selectedNode && !selectedEdge}
-              className={`p-2 text-white !bg-indigo-600 rounded text-center shadow-sm ${
+              className={`p-2 text-white rounded text-center shadow-sm ${
                 selectedNode || selectedEdge ? "bg-red-500" : "bg-gray-400"
               }`}
             >
-              Delete
+              Delete Selected
             </button>
           </div>
           
           <button
             onClick={clearFlowchart}
-            className=" p-2 !bg-red-700 text-white rounded text-center shadow-sm"
+            className="mt-auto p-2 bg-gray-700 text-white rounded text-center shadow-sm"
           >
             Clear Flowchart
           </button>
@@ -340,13 +399,35 @@ const updateNodeColor = (newColor, newTextColor) => {
                 
                 {selectedEdge && (
                   <div>
+                    <div className="mb-2">
+                      <label className="block mb-1">Edge Style:</label>
+                      <select
+                        value={edgeTypes.find(type => type.stroke === selectedEdge.style?.stroke)?.id || "default"}
+                        onChange={(e) => {
+                          const selectedType = edgeTypes.find(type => type.id === e.target.value);
+                          updateEdgeStyle(selectedType.stroke, selectedType.strokeDasharray, selectedEdge.animated);
+                        }}
+                        className="w-full p-1 border rounded text-sm"
+                      >
+                        {edgeTypes.map((type) => (
+                          <option key={type.id} value={type.id}>
+                            {type.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    
                     <div>
                       <label className="flex items-center">
                         <input
                           type="checkbox"
                           checked={selectedEdge.animated}
                           onChange={(e) => {
-                            updateEdgeAnimation(e.target.checked);
+                            updateEdgeStyle(
+                              selectedEdge.style?.stroke,
+                              selectedEdge.style?.strokeDasharray,
+                              e.target.checked
+                            );
                           }}
                           className="mr-1"
                         />

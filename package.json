@@ -14,7 +14,10 @@
     "@react-pdf-viewer/default-layout": "^3.12.0",
     "@tailwindcss/vite": "^4.0.17",
     "axios": "^1.8.4",
+<<<<<<< HEAD
+=======
     "cors": "^2.8.5",
+>>>>>>> 115bec1f536962528db6fbac088473ab2f3fbadc
     "diff": "^7.0.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
