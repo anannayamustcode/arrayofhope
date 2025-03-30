@@ -137,9 +137,9 @@ export default function FileUploader() {
                   <a
                     href={file.url}
                     download={file.name}
-                    className="mt-3 text-blue-600 hover:text-blue-800"
+                    className="mt-3"
                   >
-                    🡇
+                    <img src="/public/download.svg" alt="Download" className="w-5 h-5" />
                   </a>
                   <button
                     className="!bg-gray-100 text-red-600 hover:text-red-800"
