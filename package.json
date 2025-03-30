@@ -18,6 +18,7 @@
     "diff": "^7.0.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "html2pdf.js": "^0.10.3",
     "lucide-react": "^0.485.0",
     "mammoth": "^1.9.0",
     "multer": "^1.4.5-lts.2",

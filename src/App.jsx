@@ -35,7 +35,7 @@
               <Routes>
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/collaborate" element={<Collaborate />} />
-                <Route path="/team-chat" element={<Chat />} />
+                <Route path="/chat" element={<Chat />} />
                 <Route path="/negotiation" element={<NegotiationPage />} />
                 <Route path="/" element={<UploadPage />} />
                 <Route path="/upload" element={<UploadPage />} />
