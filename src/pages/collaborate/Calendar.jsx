@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 
 const MONTH_NAMES = [
@@ -10,6 +11,7 @@ const MONTH_NAMES = [
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const Calendar = () => {
+  const navigate = useNavigate();
   const [month, setMonth] = useState(new Date().getMonth());
   const [year, setYear] = useState(new Date().getFullYear());
   const [noOfDays, setNoOfDays] = useState([]);
@@ -18,13 +20,11 @@ const Calendar = () => {
   const [showAddEventModal, setShowAddEventModal] = useState(false);
   const [newEvent, setNewEvent] = useState({ title: "", date: "", time: "" });
 
-  // Load events from local storage on component mount
   useEffect(() => {
     const savedEvents = JSON.parse(localStorage.getItem("calendarEvents")) || {};
     setEvents(savedEvents);
   }, []);
 
-  // Save events to local storage whenever events change
   useEffect(() => {
     localStorage.setItem("calendarEvents", JSON.stringify(events));
   }, [events]);
@@ -77,16 +77,29 @@ const Calendar = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen transition-all duration-300 py-10 w-full bg-gray-100">
-      <div className="max-w-4xl rounded-2xl shadow-lg p-6 w-full transition-all duration-300 bg-white text-gray-900">
-        <div className="flex justify-between items-center mb-4">
-          {/* Month Name on the Left */}
-          <h2 className="text-xl font-bold">{MONTH_NAMES[month]} {year}</h2>
+      <div className="max-w-4xl rounded-2xl shadow-lg p-6 w-full transition-all duration-300 bg-white text-gray-900 relative">
+        
+      <div className="flex items-center p-4 bg-[#012169] text-white">
+        {/* Back button */}
+        <button 
+          onClick={() => navigate(-1)} 
+          className="mr-4 p-2 rounded hover:bg-[#001a4d] transition-colors"
+          aria-label="Go back"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+          </svg>
+        </button>
+        <h1 className="text-2xl">Calendar</h1>
+      </div>
 
-          {/* Add New+ Button and Arrows on the Right */}
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-bold">{MONTH_NAMES[month]} {year}</h2>
+
           <div className="flex items-center space-x-4">
             <button
               onClick={() => setShowAddEventModal(true)}
-              className="px-4 py-2 bg-[#012169] rounded "
+              className="mt-4 px-4 py-2 bg-[#012169] text-white rounded"
             >
               Add New+
             </button>
@@ -164,6 +177,7 @@ const Calendar = () => {
             </div>
           </div>
         )}
+        
       </div>
     </div>
   );
