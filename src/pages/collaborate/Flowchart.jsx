@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -62,6 +63,7 @@ const colorPalette = [
 ];
 
 function FlowchartPage() {
+  const navigate = useNavigate();
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [nodeName, setNodeName] = useState("New Node");
@@ -225,7 +227,20 @@ function FlowchartPage() {
 
   return (
     <div className="h-screen w-full bg-gray-100 flex flex-col">
-      <h1 className="text-2xl font-bold p-4 bg-indigo-600 text-white">Interactive Flowchart Builder</h1>
+      <div className="flex items-center p-4 bg-[#012169] text-white">
+        {/* Back button */}
+        <button 
+          onClick={() => navigate(-1)} 
+          className="mr-4 p-2 rounded hover:bg-[#001a4d] transition-colors"
+          aria-label="Go back"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+          </svg>
+        </button>
+        <h1 className="text-2xl">Interactive Flowchart Builder</h1>
+      </div>
+      
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar with controls */}
         <aside className="w-64 bg-white p-4 shadow-lg flex flex-col">
