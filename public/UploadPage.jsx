@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
-import { useNavigate } from "react-router-dom"; // ✅ Import useNavigate
+import { useNavigate } from "react-router-dom";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 
@@ -10,12 +10,17 @@ export default function FileUploader() {
   const [files, setFiles] = useState([]);
   const [previewFile, setPreviewFile] = useState(null);
   const [numPages, setNumPages] = useState(null);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [scale, setScale] = useState(1.0);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const navigate = useNavigate(); // ✅ Initialize navigation function
+  const navigate = useNavigate();
+  const containerRef = useRef(null);
 
   const handleFileUpload = (e) => {
     const uploadedFiles = Array.from(e.target.files);
     let newFiles = [...files];
+    setError("");
 
     uploadedFiles.forEach((file) => {
       if (file.size > 5 * 1024 * 1024) {
@@ -39,8 +44,29 @@ export default function FileUploader() {
   };
 
   const handlePreview = (file) => {
+    if (file.type === "pdf") {
+      setIsLoading(true);
+      setPageNumber(1);
+    }
     setPreviewFile(file);
   };
+
+  const onDocumentLoadSuccess = ({ numPages }) => {
+    setNumPages(numPages);
+    setIsLoading(false);
+    setError(null);
+  };
+
+  const onDocumentLoadError = (error) => {
+    console.error("PDF error:", error);
+    setError("Failed to load PDF. Please try another file.");
+    setIsLoading(false);
+  };
+
+  const goToPrevPage = () => setPageNumber(prev => Math.max(prev - 1, 1));
+  const goToNextPage = () => setPageNumber(prev => Math.min(prev + 1, numPages));
+  const zoomIn = () => setScale(prev => Math.min(prev + 0.25, 3.0));
+  const zoomOut = () => setScale(prev => Math.max(prev - 0.25, 0.5));
 
   return (
     <div className="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-lg">
@@ -54,6 +80,7 @@ export default function FileUploader() {
           className="hidden"
           id="file-upload"
           onChange={handleFileUpload}
+          accept=".pdf,.png,.jpg,.jpeg"
         />
         <label
           htmlFor="file-upload"
@@ -61,7 +88,7 @@ export default function FileUploader() {
         >
           Select Files
         </label>
-        <p className="mt-2 text-gray-500">Upload any file (Max 5MB each)</p>
+        <p className="mt-2 text-gray-500">Upload PDF or images (Max 5MB each)</p>
       </div>
 
       {/* Error Message */}
@@ -97,35 +124,77 @@ export default function FileUploader() {
         )}
       </div>
 
-      {/* Subtle Preview Section Below */}
+      {/* Preview Section */}
       {previewFile && (
-        <div className="mt-6 p-4 border border-gray-300 rounded-lg bg-gray-50">
+        <div className="mt-6 p-4 border border-gray-300 rounded-lg bg-gray-50" ref={containerRef}>
           <h2 className="text-lg font-semibold mb-2 text-black">
             Preview: {previewFile.name}
           </h2>
 
-          {/* PDF Preview */}
           {previewFile.type === "pdf" ? (
-            <Document
-              file={previewFile.url}
-              onLoadSuccess={({ numPages }) => setNumPages(numPages)}
-              className="border border-gray-300 p-2"
-            >
-              {Array.from(new Array(numPages), (_, index) => (
-                <Page key={index} pageNumber={index + 1} width={500} />
-              ))}
-            </Document>
-          ) : previewFile.type === "png" ||
-            previewFile.type === "jpg" ||
-            previewFile.type === "jpeg" ? (
-            /* Image Preview */
+            <>
+              {isLoading && (
+                <div className="text-center py-4">Loading PDF...</div>
+              )}
+              
+              <div className="flex gap-2 mb-4 flex-wrap">
+                <button
+                  onClick={goToPrevPage}
+                  disabled={pageNumber <= 1 || isLoading}
+                  className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+                >
+                  Previous
+                </button>
+                <span className="self-center">
+                  Page {pageNumber} of {numPages || "--"}
+                </span>
+                <button
+                  onClick={goToNextPage}
+                  disabled={pageNumber >= (numPages || 0) || isLoading}
+                  className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+                >
+                  Next
+                </button>
+                <button
+                  onClick={zoomOut}
+                  disabled={isLoading}
+                  className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50 ml-auto"
+                >
+                  Zoom Out
+                </button>
+                <span className="self-center">{(scale * 100).toFixed(0)}%</span>
+                <button
+                  onClick={zoomIn}
+                  disabled={isLoading}
+                  className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+                >
+                  Zoom In
+                </button>
+              </div>
+
+              <Document
+                file={previewFile.url}
+                onLoadSuccess={onDocumentLoadSuccess}
+                onLoadError={onDocumentLoadError}
+                loading={<div className="text-center py-4">Loading PDF...</div>}
+                className="border border-gray-300 p-2"
+              >
+                <Page
+                  pageNumber={pageNumber}
+                  width={containerRef.current?.clientWidth * 0.9}
+                  scale={scale}
+                  renderTextLayer={false}
+                  renderAnnotationLayer={false}
+                />
+              </Document>
+            </>
+          ) : ["png", "jpg", "jpeg"].includes(previewFile.type) ? (
             <img
               src={previewFile.url}
               alt="Preview"
               className="max-w-full h-auto rounded"
             />
           ) : (
-            /* Non-previewable file */
             <p className="text-black">Cannot preview this file type.</p>
           )}
         </div>
@@ -135,7 +204,7 @@ export default function FileUploader() {
       <div className="mt-6 flex justify-center">
         <button
           className="bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 transition"
-          onClick={() => navigate("/summary")} // ✅ Navigate on click
+          onClick={() => navigate("/summary")}
         >
           Summarize
         </button>
