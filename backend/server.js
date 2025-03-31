@@ -7,6 +7,8 @@ const fs = require("fs");
 const JiraApi = require('jira-client');
 const { pipeline } = require('@xenova/transformers');
 const WebSocket = require('ws');
+const axios = require("axios");
+
 
 dotenv.config();
 const app = express();
@@ -14,6 +16,35 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.get("/api/jira-events", async (req, res) => {
+  console.log("JIRA Events route hit!");
+}
+app.get("/api/jira-events", async (req, res) => {
+  try {
+    const response = await axios.get(
+      `${process.env.JIRA_DOMAIN}/rest/agile/1.0/board/1/sprint`,
+      {
+        headers: {
+          Authorization: `Basic ${Buffer.from(
+            `${process.env.JIRA_EMAIL}:${process.env.JIRA_API_TOKEN}`
+          ).toString("base64")}`,
+          Accept: "application/json",
+        },
+      }
+    );
+    const jiraEvents = response.data.values.map((sprint) => ({
+      title: sprint.name,
+      start: sprint.startDate,
+      end: sprint.endDate,
+    }));
+
+    res.json(jiraEvents);
+  } catch (error) {
+    console.error("Error fetching Jira events:", error);
+    res.status(500).json({ message: "Failed to fetch Jira events" });
+  }
+});
+
 
 // Initialize WebSocket server
 const server = app.listen(process.env.PORT || 5000, () => {
