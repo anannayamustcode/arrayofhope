@@ -32,37 +32,7 @@ export default function ReviewPage() {
   });
   const [searchTerm, setSearchTerm] = useState('');
   const [completionStatus, setCompletionStatus] = useState(0);
-  const [isExporting, setIsExporting] = useState(false);
-  const [exportResult, setExportResult] = useState(null);
-  const exportToJira = async () => {
-    setIsExporting(true);
-    setExportResult(null);
-  
-    try {
-      // Convert priorities to JIRA format
-      const issues = Object.entries(priorities).flatMap(([priority, items]) => 
-        items.map(item => ({
-          title: item.title,
-          description: `${item.description}\nType: ${item.type}`,
-          priority
-        }))
-      );
-  
-      const response = await fetch('/api/jira/create-issue', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(issues[0]) // Send first item for demo
-      });
-  
-      const result = await response.json();
-      setExportResult(result);
-    } catch (error) {
-      setExportResult({ error: error.message });
-    } finally {
-      setIsExporting(false);
-    }
-  };
-    
+
   // Calculate completion percentage
   useEffect(() => {
     const totalRequirements = requirements.length + 
@@ -124,25 +94,6 @@ export default function ReviewPage() {
                 Proceed
               </button>
             </Link>
-                        <button 
-              onClick={exportToJira}
-              disabled={isExporting}
-              className="!bg-[#0052CC] text-white px-4 py-2 rounded hover:bg-[#0065FF] transition-colors ml-2"
-            >
-              {isExporting ? 'Exporting...' : 'Export to JIRA'}
-            </button>
-
-            {exportResult && (
-              <div className={`mt-2 p-2 rounded ${exportResult.error ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
-                {exportResult.error ? (
-                  `Error: ${exportResult.error}`
-                ) : (
-                  <a href={exportResult.issueUrl} target="_blank" rel="noopener noreferrer" className="underline">
-                    JIRA Issue Created → #{exportResult.issueUrl.split('/').pop()}
-                  </a>
-                )}
-              </div>
-            )}
           </div>
         </div>
 
