@@ -16,9 +16,7 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.get("/api/jira-events", async (req, res) => {
-  console.log("JIRA Events route hit!");
-}
+
 app.get("/api/jira-events", async (req, res) => {
   try {
     const response = await axios.get(
