@@ -77,7 +77,7 @@ const Calendar = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen transition-all duration-300 py-10 w-full bg-gray-100">
-      <div className="max-w-4xl sm:max-w-md md:max-w-lg lg:max-w-2xl xl:max-w-3xl 2xl:max-w-4xl rounded-2xl shadow-lg p-6 w-full transition-all duration-300 bg-white text-gray-900 relative transform translate-x-20">
+      <div className="max-w-4xl sm:max-w-md md:max-w-lg lg:max-w-2xl xl:max-w-3xl 2xl:max-w-4xl rounded-2xl shadow-lg p-6 w-full transition-all duration-300 bg-white text-gray-900 relative transform translate-x-12">
         
         <div className="flex items-center p-4 bg-[#012169] text-white">
           {/* Back button */}

@@ -2,6 +2,8 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 // Import the html2pdf library
 import html2pdf from "html2pdf.js";
+import { saveAs } from "file-saver";
+import { Document, Packer, Paragraph, TextRun } from "docx";
 
 export default function ExportPage() {
   const navigate = useNavigate();
@@ -14,77 +16,83 @@ export default function ExportPage() {
   const [isExporting, setIsExporting] = useState(false);
   const documentRef = useRef(null);
   const previewRef = useRef(null);
-  
+
   const handleContentChange = (e) => {
     setDocumentContent(e.target.value);
   };
-  
+
   const handleFormatSelect = (format) => {
     setSelectedFormat(format);
   };
-  
+
   const handleSave = () => {
     setIsSaving(true);
-    
+
     // Simulate save operation
     setTimeout(() => {
       setIsSaving(false);
       setSaveStatus("saved");
-      
+
       // Clear status after 3 seconds
       setTimeout(() => {
         setSaveStatus(null);
       }, 3000);
     }, 800);
   };
-  
+
   const handleExport = async () => {
     setIsExporting(true);
-    
+
     if (selectedFormat === "PDF") {
       try {
-        // Format the markdown content for better PDF styling
         const formattedContent = documentContent
           .replace(/^# (.*$)/gm, '<h1 style="font-size: 24px; font-weight: bold; margin-top: 20px; margin-bottom: 10px;">$1</h1>')
           .replace(/^## (.*$)/gm, '<h2 style="font-size: 20px; font-weight: bold; margin-top: 15px; margin-bottom: 10px;">$1</h2>')
           .replace(/^- (.*$)/gm, '<li style="margin-left: 20px; margin-bottom: 5px;">$1</li>')
           .replace(/\n\n/g, '</p><p style="margin-bottom: 10px;">');
-        
-        // Create a styled container for the PDF content
+
         const element = document.createElement('div');
-        element.innerHTML = `
-          <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5; padding: 20px;">
-            ${formattedContent}
-          </div>
-        `;
-        
-        // Configure PDF options
+        element.innerHTML = `<div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5; padding: 20px;">${formattedContent}</div>`;
+
         const options = {
-          margin: [15, 15, 15, 15], // [top, right, bottom, left] margins in mm
+          margin: [15, 15, 15, 15],
           filename: 'requirements_document.pdf',
           image: { type: 'jpeg', quality: 0.98 },
           html2canvas: { scale: 2, useCORS: true },
           jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
-        
-        // Generate and download the PDF
+
         await html2pdf().from(element).set(options).save();
       } catch (error) {
         console.error('PDF generation failed:', error);
         alert('Failed to generate PDF. Please try again.');
       }
     } else if (selectedFormat === "Microsoft Word (.docx)") {
-      // This would be implemented with a different library like docx-js
-      alert("Word export not implemented yet");
+      try {
+        const doc = new Document({
+          sections: [
+            {
+              properties: {},
+              children: documentContent.split('\n').map((line) => new Paragraph({
+                children: [new TextRun(line)],
+              })),
+            },
+          ],
+        });
+
+        const blob = await Packer.toBlob(doc);
+        saveAs(blob, "requirements_document.docx");
+      } catch (error) {
+        console.error("Word export failed:", error);
+        alert("Failed to generate Word document. Please try again.");
+      }
     } else if (selectedFormat === "Excel (.xlsx)") {
-      // This would be implemented with a library like xlsx-js
       alert("Excel export not implemented yet");
     }
-    
+
     setIsExporting(false);
   };
-  
-  // Convert markdown to HTML for the preview
+
   const getPreviewHtml = () => {
     return documentContent
       .replace(/^# (.*$)/gm, '<h1 style="font-size: 1.5rem; font-weight: bold; margin-top: 1rem;">$1</h1>')
@@ -96,7 +104,7 @@ export default function ExportPage() {
   return (
     <div className="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow">
       <h1 className="text-2xl font-bold text-[#012169] mb-6">Export Requirements</h1>
-      
+
       {/* Live Editable Document */}
       <div className="border rounded-lg p-4 mb-6 bg-gray-50">
         <div className="flex justify-between items-center mb-3">
@@ -105,7 +113,7 @@ export default function ExportPage() {
             {saveStatus === "saved" && (
               <span className="text-green-600 mr-2">✓ Saved</span>
             )}
-            <button 
+            <button
               onClick={handleSave}
               className="px-3 py-1 border border-gray-300 rounded-md bg-white hover:bg-gray-50 text-sm mr-2"
               disabled={isSaving}
@@ -137,8 +145,8 @@ export default function ExportPage() {
               key={format}
               onClick={() => handleFormatSelect(format)}
               className={`border px-4 py-2 rounded-lg transition ${
-                selectedFormat === format 
-                  ? "bg-[#012169] text-black" 
+                selectedFormat === format
+                  ? "bg-[#012169] text-black"
                   : "hover:bg-gray-100"
               }`}
             >
@@ -163,7 +171,7 @@ export default function ExportPage() {
       {/* Document Preview */}
       <div className="border rounded-lg p-6 mb-6">
         <h2 className="font-semibold text-lg mb-3">Preview</h2>
-        <div 
+        <div
           ref={previewRef}
           className="bg-white border rounded-lg p-4 text-sm"
           dangerouslySetInnerHTML={{ __html: getPreviewHtml() }}
@@ -178,14 +186,14 @@ export default function ExportPage() {
         </div>
 
         <div className="flex gap-3">
-          <button 
-            onClick={() => navigate("/history")} 
+          <button
+            onClick={() => navigate("/history")}
             className="!bg-[#012169] text-white px-6 py-3 rounded-lg hover:bg-[#001a4d] transition"
           >
             History
           </button>
 
-          <button 
+          <button
             onClick={handleExport}
             disabled={isExporting}
             className="!bg-[#012169] text-white px-6 py-3 rounded-lg hover:bg-[#001a4d] transition disabled:bg-gray-400"
