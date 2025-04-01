@@ -9,7 +9,7 @@ const Chat = () => {
   
   // Mock friends data with online status and unread messages
   const [friends, setFriends] = useState([
-    { id: 1, name: "Sarah Johnson", avatar: "/api/placeholder/40/40", status: "online", lastSeen: "now", unread: 2, 
+    { id: 1, name: "Sarah Johnson", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ishita&mood[]=happy", status: "online", lastSeen: "now", unread: 2, 
       messages: [
         { sender: "Sarah Johnson", text: "Hey, how's the project going?", time: "10:30 AM", isRead: true },
         { sender: "Sarah Johnson", text: "Did you finish the dashboard?", time: "10:32 AM", isRead: true },
@@ -18,28 +18,28 @@ const Chat = () => {
         { sender: "Sarah Johnson", text: "Also, are we meeting tomorrow?", time: "10:37 AM", isRead: false },
       ]
     },
-    { id: 2, name: "Michael Chen", avatar: "/api/placeholder/40/40", status: "offline", lastSeen: "2h ago", unread: 0,
+    { id: 2, name: "Michael Chen", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=ananya&mood[]=happy", status: "offline", lastSeen: "2h ago", unread: 0,
       messages: [
         { sender: "You", text: "Hi Michael, do you have the financial report?", time: "Yesterday", isRead: true },
         { sender: "Michael Chen", text: "Yes, I'll email it to you in a moment.", time: "Yesterday", isRead: true },
         { sender: "Michael Chen", text: "Just sent it. Let me know if you need anything else.", time: "Yesterday", isRead: true },
       ]
     },
-    { id: 3, name: "Jessica Williams", avatar: "/api/placeholder/40/40", status: "online", lastSeen: "now", unread: 0,
+    { id: 3, name: "Jessica Williams", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Bhavika&mood[]=happy", status: "online", lastSeen: "now", unread: 0,
       messages: [
         { sender: "Jessica Williams", text: "Are we still on for the client meeting at 3?", time: "9:15 AM", isRead: true },
         { sender: "You", text: "Yes, I've prepared all the materials.", time: "9:20 AM", isRead: true },
         { sender: "Jessica Williams", text: "Perfect! I'll see you in the conference room.", time: "9:22 AM", isRead: true },
       ]
     },
-    { id: 4, name: "David Brown", avatar: "/api/placeholder/40/40", status: "busy", lastSeen: "30m ago", unread: 1,
+    { id: 4, name: "David Brown", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Aarush&mood[]=happy", status: "busy", lastSeen: "30m ago", unread: 1,
       messages: [
         { sender: "David Brown", text: "Can you help me with the API integration?", time: "11:45 AM", isRead: true },
         { sender: "You", text: "Sure, what's the issue you're facing?", time: "11:50 AM", isRead: true },
         { sender: "David Brown", text: "I'm getting authentication errors. Can we hop on a quick call?", time: "Just now", isRead: false },
       ]
     },
-    { id: 5, name: "Emily Davis", avatar: "/api/placeholder/40/40", status: "away", lastSeen: "5m ago", unread: 0,
+    { id: 5, name: "Emily Davis", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=seed&mood[]=happy", status: "away", lastSeen: "5m ago", unread: 0,
       messages: [
         { sender: "Emily Davis", text: "The client loved our presentation!", time: "Yesterday", isRead: true },
         { sender: "You", text: "That's great news! What feedback did they give?", time: "Yesterday", isRead: true },
@@ -47,6 +47,7 @@ const Chat = () => {
       ]
     },
   ]);
+  
 
   useEffect(() => {
     if (activeChat) {
