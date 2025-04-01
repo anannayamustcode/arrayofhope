@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -26,7 +27,6 @@ const nodeTypes = {
       </div>
     </div>
   ),  
-
 };
 
 // Initial nodes and edges
@@ -54,6 +54,7 @@ const colorPalette = [
 ];
 
 function FlowchartPage() {
+  const navigate = useNavigate();
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [nodeName, setNodeName] = useState("New Node");
@@ -120,34 +121,34 @@ function FlowchartPage() {
     setSelectedNode(null);
   }, []);
 
-// Update node label
-const updateNodeLabel = (newLabel) => {
-  setNodes((nds) =>
-    nds.map((node) =>
-      node.id === selectedNode?.id
-        ? { ...node, data: { ...node.data, label: newLabel } }
-        : node
-    )
-  );
-};
+  // Update node label
+  const updateNodeLabel = (newLabel) => {
+    setNodes((nds) =>
+      nds.map((node) =>
+        node.id === selectedNode?.id
+          ? { ...node, data: { ...node.data, label: newLabel } }
+          : node
+      )
+    );
+  };
 
-// Update node color
-const updateNodeColor = (newColor, newTextColor) => {
-  setNodes((nds) =>
-    nds.map((node) =>
-      node.id === selectedNode?.id
-        ? {
-            ...node,
-            data: {
-              ...node.data,
-              color: newColor,
-              textColor: newTextColor || node.data.textColor || "white",
-            },
-          }
-        : node
-    )
-  );
-};
+  // Update node color
+  const updateNodeColor = (newColor, newTextColor) => {
+    setNodes((nds) =>
+      nds.map((node) =>
+        node.id === selectedNode?.id
+          ? {
+              ...node,
+              data: {
+                ...node.data,
+                color: newColor,
+                textColor: newTextColor || node.data.textColor || "white",
+              },
+            }
+          : node
+      )
+    );
+  };
 
   // Update edge animation property
   const updateEdgeAnimation = (animated) => {
@@ -197,8 +198,13 @@ const updateNodeColor = (newColor, newTextColor) => {
   return (
     <div className="h-screen w-full bg-gray-100 flex flex-col">
       <div className="flex items-center p-4 bg-white shadow-md">
-        <button onClick={() => navigate(-1)} className="mr-4 px-3 py-1 bg-gray-200 rounded">⬅</button>
-      <h1 className="!bg-white text-2xl font-bold p-4  text-black">Flowchart Builder</h1>
+        <button 
+          onClick={() => navigate(-1)} 
+          className="mr-4 px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 transition-colors"
+        >
+          ⬅ Back
+        </button>
+        <h1 className="text-2xl font-bold text-black">Flowchart Builder</h1>
       </div>
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar with controls */}
@@ -269,8 +275,8 @@ const updateNodeColor = (newColor, newTextColor) => {
             <button
               onClick={deleteSelected}
               disabled={!selectedNode && !selectedEdge}
-              className={`p-2 text-white !bg-indigo-600 rounded text-center shadow-sm ${
-                selectedNode || selectedEdge ? "bg-red-500" : "bg-gray-400"
+              className={`p-2 text-white rounded text-center shadow-sm ${
+                selectedNode || selectedEdge ? "bg-red-500 hover:bg-red-600" : "bg-gray-400 cursor-not-allowed"
               }`}
             >
               Delete
@@ -279,7 +285,7 @@ const updateNodeColor = (newColor, newTextColor) => {
           
           <button
             onClick={clearFlowchart}
-            className=" p-2 !bg-red-700 text-white rounded text-center shadow-sm"
+            className="p-2 bg-red-700 hover:bg-red-800 text-white rounded text-center shadow-sm transition-colors"
           >
             Clear Flowchart
           </button>
