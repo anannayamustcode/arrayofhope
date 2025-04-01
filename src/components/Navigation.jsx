@@ -1,6 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../components/AuthContext";
 import { FaUserCircle } from "react-icons/fa"; // Import user icon
+import logo from "../assets/logo.svg"; // Adjust path if necessary
+import barc from "../assets/barc.svg"; // Adjust path if necessary
 
 export default function Navigation() {
   const location = useLocation();
@@ -17,9 +19,13 @@ export default function Navigation() {
     <nav className="bg-[#012169] text-white shadow-md w-full">
       <div className="w-full max-w-7xl mx-auto px-4 py-2">
         <div className="flex justify-between items-center py-2">
-          <h1 className="text-xl font-bold">
-            <Link to="/" className="!text-white">Barclays</Link>
-          </h1>
+        <h1 className="text-xl font-bold">
+  <Link to="/" className="!text-white flex items-center space-x-4"> {/* Added flex and spacing */}
+    <img src={logo} alt="Logo" className="h-9" />
+    <img src={barc} alt="Logo" className="h-8" />
+  </Link>
+</h1>
+
 
           <div className="flex space-x-4">
             {navItems.map((item) => (
