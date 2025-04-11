@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../components/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
+import { auth } from "../firebase"; // Make sure this path is correct
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 
 const SignUp = () => {
@@ -11,34 +12,67 @@ const SignUp = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { signup } = useAuth();
+  const { signUp } = useAuth();
   const navigate = useNavigate();
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   if (!name || !email || !password || !confirmPassword) {
+  //     return setError("Please fill in all fields");
+  //   }
+
+  //   if (password !== confirmPassword) {
+  //     return setError("Passwords do not match");
+  //   }
+
+  //   try {
+  //     setError("");
+  //     setLoading(true);
+
+  //     // await signup(name, email, password);
+  //     await signup( email, password);
+  //     navigate("/dashboard"); // Redirects all users to job preferences
+  //   } catch (err) {
+  //     setError("Failed to create an account");
+  //     console.error(err);
+  //   }
+
+  //   setLoading(false);
+  // };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!name || !email || !password || !confirmPassword) {
       return setError("Please fill in all fields");
     }
-
+  
     if (password !== confirmPassword) {
       return setError("Passwords do not match");
     }
-
+  
     try {
       setError("");
       setLoading(true);
-
-      await signup(name, email, password);
-      navigate("/dashboard"); // Redirects all users to job preferences
+  
+      await signUp(email, password);
+  
+      // 🔥 Set display name in Firebase user profile
+      await updateProfile(auth.currentUser, {
+        displayName: name
+      });
+  
+      navigate("/dashboard");
     } catch (err) {
       setError("Failed to create an account");
       console.error(err);
     }
-
+  
     setLoading(false);
   };
-
+  
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
       <div className="p-8 bg-white shadow-lg rounded-lg w-full max-w-md">

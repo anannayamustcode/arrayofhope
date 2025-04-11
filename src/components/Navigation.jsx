@@ -1,12 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
-import { useAuth } from "../components/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 import { FaUserCircle } from "react-icons/fa";
 import logo from "../assets/logo.svg";
 import barc from "../assets/barc.svg";
 
 export default function Navigation() {
   const location = useLocation();
-  const { currentUser } = useAuth();
+  const { user } = useAuth(); // Use 'user' instead of 'currentUser'
 
   const navItems = [
     { path: "/upload", name: "Upload" },
@@ -27,7 +27,7 @@ export default function Navigation() {
           </h1>
 
           <div className="flex space-x-4">
-            {!currentUser ? (
+            {!user ? ( // If user is not logged in, show login/signup links
               <>
                 <Link to="/login" className="!text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-700">
                   Login
@@ -36,7 +36,7 @@ export default function Navigation() {
                   Signup
                 </Link>
               </>
-            ) : (
+            ) : ( // If user is logged in, show navigation items and profile icon
               <>
                 {navItems.map((item) => (
                   <Link

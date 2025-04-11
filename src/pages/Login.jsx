@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../components/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -8,7 +8,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { login } = useAuth();
+  const { logIn } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -22,7 +22,7 @@ const Login = () => {
       setError("");
       setLoading(true);
 
-      await login(email, password);
+      await logIn(email, password);
       navigate("/dashboard"); // Redirects all users to the dashboard
     } catch (err) {
       setError("Failed to sign in");

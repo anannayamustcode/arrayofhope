@@ -1,16 +1,19 @@
+// src/contexts/AuthContext.jsx
 import { createContext, useContext, useEffect, useState } from 'react';
-import { auth } from '../firebase';
 import { 
+  getAuth, 
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
   signOut, 
   onAuthStateChanged 
 } from 'firebase/auth';
+import { auth } from '../firebase';
 
 const AuthContext = createContext();
 
-export function AuthContextProvider({ children }) {
-  const [user, setUser] = useState({});
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true); // ✅ ADD THIS
 
   function signUp(email, password) {
     return createUserWithEmailAndPassword(auth, email, password);
@@ -27,19 +30,18 @@ export function AuthContextProvider({ children }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+      setLoading(false); // ✅ FIXED: now this works
     });
-    return () => {
-      unsubscribe();
-    };
+    return () => unsubscribe();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ signUp, logIn, logOut, user }}>
-      {children}
+    <AuthContext.Provider value={{ signUp, logIn, logOut, user, loading }}>
+      {!loading && children} {/* ✅ Prevent rendering until auth is ready */}
     </AuthContext.Provider>
   );
 }
 
-export function UserAuth() {
+export function useAuth() {
   return useContext(AuthContext);
 }

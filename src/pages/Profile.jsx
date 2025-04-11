@@ -1,5 +1,6 @@
+// src/pages/Profile.jsx
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../components/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { 
   Edit, LogOut, Mail, User, Phone, Briefcase, Bug, 
@@ -7,15 +8,15 @@ import {
 } from "lucide-react";
 
 const Profile = () => {
-  const { currentUser, logout } = useAuth();
+  const { user, logOut } = useAuth(); // Use 'user' instead of 'currentUser'
   const navigate = useNavigate();
 
   // Enhanced state management with proper fallbacks
   const [userData, setUserData] = useState({
-    name: localStorage.getItem("profileName") || currentUser?.name || "John Doe",
-    job: localStorage.getItem("profileJob") || currentUser?.jobTitle || "Software Engineer",
-    contact: localStorage.getItem("profileContact") || currentUser?.phoneNumber || "+1234567890",
-    email: localStorage.getItem("profileEmail") || currentUser?.email || "johndoe@example.com",
+    name: localStorage.getItem("profileName") || user?.displayName || "John Doe",
+    job: localStorage.getItem("profileJob") || user?.jobTitle || "Software Engineer",
+    contact: localStorage.getItem("profileContact") || user?.phoneNumber || "+1234567890",
+    email: localStorage.getItem("profileEmail") || user?.email || "johndoe@example.com",
   });
 
   const [isEditing, setIsEditing] = useState({
@@ -36,7 +37,7 @@ const Profile = () => {
   }, [userData]);
 
   const handleLogout = () => {
-    logout();
+    logOut();
     navigate("/login");
   };
 
@@ -127,7 +128,7 @@ const Profile = () => {
     </div>
   );
 
-  if (!currentUser) {
+  if (!user) {
     return (
       <div className="flex flex-col justify-center items-center h-screen bg-gray-50">
         <div className="bg-white p-8 rounded-lg shadow-md text-center">
@@ -176,85 +177,40 @@ const Profile = () => {
             <button className="text-blue-600 text-sm font-medium hover:text-blue-800">View All</button>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[
-              { name: "Project Alpha", status: "Active", progress: 75 },
-              { name: "Project Beta", status: "Planning", progress: 25 },
-              { name: "Project Gamma", status: "Completed", progress: 100 }
-            ].map((project, index) => (
+            {[{
+              name: "Project Alpha", status: "Active", progress: 75
+            },{
+              name: "Project Beta", status: "Planning", progress: 25
+            },{
+              name: "Project Gamma", status: "Completed", progress: 100
+            }].map((project, index) => (
               <div
                 key={index}
                 className="bg-white p-5 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition"
               >
                 <div className="flex justify-between items-center mb-3">
-                  <div className="bg-blue-50 p-2 rounded-lg">
-                    <Folder className="text-blue-600 w-5 h-5" />
-                  </div>
-                  <span className={`text-xs font-medium px-2 py-1 rounded-full ${
-                    project.status === "Active" ? "bg-green-100 text-green-800" :
-                    project.status === "Planning" ? "bg-yellow-100 text-yellow-800" :
-                    "bg-blue-100 text-blue-800"
-                  }`}>
-                    {project.status}
-                  </span>
+                  <div className="text-sm text-gray-500">{project.status}</div>
+                  <div className="text-xl font-medium text-gray-800">{project.name}</div>
                 </div>
-                <h3 className="font-medium text-gray-900 mb-1">{project.name}</h3>
-                <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
-                  <div 
-                    className="bg-blue-600 h-2 rounded-full" 
+                <div className="w-full bg-gray-200 h-2 rounded-lg">
+                  <div
                     style={{ width: `${project.progress}%` }}
-                  ></div>
+                    className="bg-blue-500 h-2 rounded-lg"
+                  />
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-gray-500">{project.progress}% complete</span>
-                  <button className="text-gray-400 hover:text-blue-600">
-                    <ChevronRight className="w-5 h-5" />
-                  </button>
-                </div>
+                <div className="text-sm text-gray-500 mt-3">Progress: {project.progress}%</div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Quick Actions */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Quick Actions</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <button className="flex items-center justify-between bg-blue-50 hover:bg-blue-100 text-blue-700 p-4 rounded-lg transition">
-              <div className="flex items-center space-x-3">
-                <Folder className="w-5 h-5" />
-                <span>Create New Project</span>
-              </div>
-              <ChevronRight className="w-5 h-5" />
-            </button>
-            <button className="flex items-center justify-between bg-gray-50 hover:bg-gray-100 text-gray-700 p-4 rounded-lg transition">
-              <div className="flex items-center space-x-3">
-                <Settings className="w-5 h-5" />
-                <span>Account Settings</span>
-              </div>
-              <ChevronRight className="w-5 h-5" />
-            </button>
-
-            <button className="flex items-center justify-between bg-red-50 hover:bg-red-100 text-red-700 p-4 rounded-lg transition">
-              <div className="flex items-center space-x-3">
-                <Bug className="w-5 h-5" />
-                <span>Report Issue</span>
-              </div>
-              <ChevronRight className="w-5 h-5" />
-            </button>
-            <button
-            onClick={handleLogout}
-            className="flex items-center space-x-2 px-4 py-2 !bg-red-500 !text-white rounded-lg hover:bg-red-600 transition"
-          >
-            <div className="flex items-center space-x-3">
-            <LogOut className="w-5 h-5" />
-            <span>Logout</span>
-            </div>
-
-            <ChevronRight className="w-5 h-5" />
-
-          </button>
-          </div>
-        </div>
+        <button
+          onClick={handleLogout}
+          className="w-full py-3 text-white !bg-red-600 rounded-lg hover:bg-red-700 transition"
+        >
+          <LogOut className="w-5 h-5 inline-block mr-2" />
+          Log Out
+        </button>
       </div>
     </div>
   );
