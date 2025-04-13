@@ -4,6 +4,8 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const path = require("path");
 const fs = require("fs");
+const axios = require("axios");
+const cheerio = require("cheerio");
 
 dotenv.config();
 const app = express();
@@ -40,6 +42,39 @@ app.post("/upload", upload.single("file"), (req, res) => {
     filename: req.file.filename,
     filePath: `/uploads/${req.file.filename}`,
   });
+});
+app.post("/upload-url", async (req, res) => {
+  const { url } = req.body;
+
+  if (!url || !url.startsWith("http")) {
+    return res.status(400).json({ error: "A valid URL is required" });
+  }
+
+  try {
+    const { data: html } = await axios.get(url);
+    const $ = cheerio.load(html);
+
+    const pageText = $("body").text().replace(/\s+/g, " ").trim().slice(0, 5000);
+    const filename = `${Date.now()}-webpage.txt`;
+    const filepath = path.join(uploadDir, filename);
+
+    fs.writeFile(filepath, pageText, (err) => {
+      if (err) {
+        console.error("File write error:", err);
+        return res.status(500).json({ error: "Failed to write file" });
+      }
+
+      console.log("Web content saved:", filepath);
+      res.json({
+        message: "Webpage content saved as text file",
+        filename,
+        filePath: `/uploads/${filename}`,
+      });
+    });
+  } catch (err) {
+    console.error("Fetch error:", err.message);
+    res.status(500).json({ error: "Failed to fetch or process URL" });
+  }
 });
 
 // Serve uploaded files statically

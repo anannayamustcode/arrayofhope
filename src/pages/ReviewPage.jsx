@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { AlertCircle, AlertTriangle, ChevronDown, ChevronUp, Menu } from 'lucide-react';
+import { AlertCircle, AlertTriangle, ChevronDown, ChevronUp, Menu, Check, Square } from 'lucide-react';
 import ComplianceAlert from '../components/ComplianceAlert';
 import PriorityBadge from '../components/PriorityBadge';
 import { Link } from "react-router-dom";
@@ -17,7 +17,13 @@ export default function ReviewPage() {
     { id: 4, title: 'Accessibility', description: 'UI must comply with WCAG 2.1 AA standards', type: 'Compliance' }
   ];
 
+  const initialGaps = [
+    { id: 101, title: 'No timeout specified for login session', description: 'Security requirement needs to be added', type: 'Security', severity: 'high' },
+    { id: 102, title: 'Password complexity requirements not defined', description: 'Define minimum password requirements', type: 'Security', severity: 'medium' }
+  ];
+
   const [requirements, setRequirements] = useState(initialRequirements);
+  const [gaps, setGaps] = useState(initialGaps);
   const [priorities, setPriorities] = useState({
     'Must Have': [],
     'Should Have': [],
@@ -48,7 +54,29 @@ export default function ReviewPage() {
 
   // Handle dropping an item into a priority category
   const handleDrop = (item, category) => {
-    setRequirements(requirements.filter((req) => req.id !== item.id));
+    // First check if the item is already in another priority category
+    let isInAnotherCategory = false;
+    let previousCategory = null;
+
+    Object.keys(priorities).forEach(cat => {
+      if (priorities[cat].some(req => req.id === item.id)) {
+        isInAnotherCategory = true;
+        previousCategory = cat;
+      }
+    });
+
+    if (isInAnotherCategory) {
+      // Remove from previous category
+      setPriorities(prev => ({
+        ...prev,
+        [previousCategory]: prev[previousCategory].filter(req => req.id !== item.id),
+      }));
+    } else {
+      // Remove from requirements list
+      setRequirements(requirements.filter((req) => req.id !== item.id));
+    }
+
+    // Add to new category
     setPriorities((prev) => ({
       ...prev,
       [category]: [...prev[category], item],
@@ -70,6 +98,23 @@ export default function ReviewPage() {
       ...prev,
       [category]: !prev[category],
     }));
+  };
+
+  // Handle gap resolution
+  const handleGapResolution = () => {
+    // Convert all gaps to requirements
+    const newRequirements = gaps.map(gap => ({
+      id: gap.id,
+      title: gap.title,
+      description: gap.description,
+      type: gap.type
+    }));
+    
+    // Add gaps to requirements
+    setRequirements(prev => [...prev, ...newRequirements]);
+    
+    // Clear gaps
+    setGaps([]);
   };
 
   // Filter requirements based on search term
@@ -144,16 +189,31 @@ export default function ReviewPage() {
                   <AlertTriangle size={16} className="mr-2 text-amber-500" />
                   Gaps & Issues
                 </h2>
-                <span className="text-sm bg-red-100 text-red-800 px-2 py-1 rounded-full">2</span>
+                <span className="text-sm bg-red-100 text-red-800 px-2 py-1 rounded-full">{gaps.length}</span>
               </div>
-              <div className="space-y-3">
-                <ComplianceAlert message="No timeout specified for login session" severity="high" />
-                <ComplianceAlert message="Password complexity requirements not defined" severity="medium" />
-              </div>
-
-              <Link to="/negotiation" className="mt-4 !bg-[#012169] !text-white px-4 py-2 rounded-lg text-sm hover:bg-[#013169] transition-colors inline-block text-center">
-                Resolve Issues
-              </Link>
+              {gaps.length > 0 ? (
+                <div className="space-y-3">
+                  {gaps.map((gap) => (
+                    <div key={gap.id} className="flex items-start space-x-2">
+                      <button 
+                        className="mt-1 text-gray-400 hover:text-green-500 transition-colors"
+                        onClick={handleGapResolution}
+                      >
+                        <Square size={16} />
+                      </button>
+                      <ComplianceAlert message={gap.title} severity={gap.severity} />
+                    </div>
+                  ))}
+                  <button 
+                    className="mt-4 !bg-[#012169] !text-white px-4 py-2 rounded-lg text-sm hover:bg-[#013169] transition-colors inline-block text-center"
+                    onClick={handleGapResolution}
+                  >
+                    Resolve Issues
+                  </button>
+                </div>
+              ) : (
+                <p className="text-gray-500 text-center py-3">No outstanding issues</p>
+              )}
             </div>
           </div>
 
@@ -288,7 +348,7 @@ const PriorityCategory = ({ category, items, onDrop, onRemove, isExpanded, onTog
                   key={item.id} 
                   className="p-2 bg-white rounded border border-gray-200 shadow-sm flex justify-between items-center"
                 >
-                  <span>{item.title}</span>
+                  <DraggableRequirementInCategory item={item} />
                   <button 
                     className="text-gray-400 hover:text-red-500 transition-colors"
                     onClick={() => onRemove(item, category)}
@@ -306,8 +366,27 @@ const PriorityCategory = ({ category, items, onDrop, onRemove, isExpanded, onTog
             </div>
           )}
         </div>
-        
       )}
+    </div>
+  );
+};
+
+// Draggable component for requirements already in a category
+const DraggableRequirementInCategory = ({ item }) => {
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: ItemType,
+    item: item,
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  }));
+
+  return (
+    <div 
+      ref={drag}
+      className={`flex-1 cursor-move ${isDragging ? 'opacity-50' : ''}`}
+    >
+      {item.title}
     </div>
   );
 };

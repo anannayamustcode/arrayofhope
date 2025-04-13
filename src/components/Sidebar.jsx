@@ -10,7 +10,6 @@ import {
   Workflow, 
   Handshake
 } from "lucide-react";
-import barc from "../assets/barc.svg";
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -26,14 +25,7 @@ const Sidebar = () => {
       >
         <Menu size={24} />
       </button>
-
-      <div className={`flex items-center space-x-2 ${isCollapsed ? "justify-center" : ""} mt-4`}>
-        <h1 className="text-xl font-bold">
-          <Link to="/" className="!text-white flex items-center space-x-5">
-            <img src={barc} alt="Logo" className="h-8" />
-          </Link>
-        </h1>
-      </div>
+    
 
       <nav className="space-y-3 mt-6">
         <Link 

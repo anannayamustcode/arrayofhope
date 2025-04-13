@@ -17,6 +17,7 @@ export default function FileUploader() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const containerRef = useRef(null);
+  const [urlInput, setUrlInput] = useState("");
 
   // Handle file uploads
   const handleFileUpload = async (e) => {
@@ -60,7 +61,40 @@ export default function FileUploader() {
       setError("Failed to upload file to server.");
     }
   };
-
+  const handleUrlUpload = async () => {
+    if (!urlInput.trim()) {
+      setError("Please enter a valid URL.");
+      return;
+    }
+  
+    try {
+      const response = await fetch("http://localhost:5000/upload-url", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ url: urlInput }),
+      });
+  
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message || "Failed to fetch site.");
+  
+      const newUrlFile = {
+        name: result.title || urlInput,
+        type: "url",
+        url: result.url,
+      };
+  
+      setFiles((prev) => [...prev, newUrlFile]);
+      setUrlInput(""); // reset input
+      setError("");
+      console.log("URL upload success:", result);
+    } catch (err) {
+      console.error("Error uploading URL:", err);
+      setError("Failed to fetch website content.");
+    }
+  };
+  
   // Remove file and clean up memory
   const removeFile = (fileName) => {
     setFiles((prevFiles) => prevFiles.filter((file) => file.name !== fileName));
@@ -116,6 +150,23 @@ export default function FileUploader() {
         </label>
         <p className="mt-2 text-gray-500">Upload PDF, images, or documents (Max 5MB each)</p>
       </div>
+      {/* URL Upload Input */}
+      <div className="mt-4 text-center text-black">
+        <input
+          type="text"
+          value={urlInput}
+          onChange={(e) => setUrlInput(e.target.value)}
+          placeholder="Enter website URL"
+          className="border border-gray-300 px-4 py-2 rounded-md w-5/6"
+        />
+        <button
+          onClick={handleUrlUpload}
+          className="ml-2 !bg-[#012169] text-white px-4 py-2 rounded-md hover:bg-[#0038a8]"
+        >
+          Add URL
+        </button>
+      </div>
+
 
       {/* Error Message */}
       {error && <div className="mt-4 p-3 bg-red-50 text-red-800 rounded">{error}</div>}

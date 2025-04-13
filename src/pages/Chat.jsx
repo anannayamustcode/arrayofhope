@@ -147,7 +147,7 @@ const Chat = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-gray-100 ml-10">
       {/* Sidebar */}
       <div className="w-80 bg-white border-r flex flex-col">
         <div className="p-4 border-b">
