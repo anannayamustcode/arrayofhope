@@ -76,11 +76,11 @@ const Profile = () => {
     }));
   };
 
-  const renderEditableField = (label, field, Icon) => (
+  const renderEditableField = (label, field, FieldIcon) => (
     <div className="flex items-center justify-between py-4 px-6 bg-white rounded-lg shadow-sm mb-3">
       <div className="flex items-center space-x-4">
         <div className="bg-blue-50 p-2 rounded-lg">
-          <Icon className="text-blue-600 w-5 h-5" />
+          <FieldIcon className="text-blue-600 w-5 h-5" />
         </div>
         <div>
           <p className="text-sm font-medium text-gray-500">{label}</p>

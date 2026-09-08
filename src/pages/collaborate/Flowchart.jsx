@@ -107,7 +107,7 @@ function FlowchartPage() {
       
       setNodes((nds) => nds.concat(newNode));
     }
-  }, [reactFlowInstance, nodes, nodeName, selectedColor, selectedNodeType]);
+  }, [reactFlowInstance, nodes, nodeName, selectedColor, setNodes]);
 
   // Node selection handler
   const onNodeClick = useCallback((event, node) => {

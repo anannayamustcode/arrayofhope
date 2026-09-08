@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { auth } from "../firebase"; // Make sure this path is correct
-import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth } from "../firebase";
+import { updateProfile } from "firebase/auth";
 
 const SignUp = () => {
   const [name, setName] = useState("");

@@ -1,6 +1,6 @@
-  import React, { useState, useEffect } from 'react';
-  import { Bar, Pie, LineChart, Line, BarChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Cell, ResponsiveContainer, AreaChart, Area } from 'recharts';
-  import { Check, Clock, AlertCircle, FileText, Filter, Search, Calendar, Download, RefreshCw, ChevronDown, Users, TrendingUp, Activity } from 'lucide-react';
+import React, { useState } from 'react';
+import { Bar, Pie, LineChart, Line, BarChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Cell, ResponsiveContainer, AreaChart, Area } from 'recharts';
+import { Check, Clock, AlertCircle, FileText, Filter, Search, Calendar, Download, RefreshCw, ChevronDown, Users, TrendingUp, Activity } from 'lucide-react';
 
   // Sample data
   const requirementsData = [
@@ -78,7 +78,7 @@
     const [filterStatus, setFilterStatus] = useState('All');
     const [filterPriority, setFilterPriority] = useState('All');
     const [isRefreshing, setIsRefreshing] = useState(false);
-    const [dateRange, setDateRange] = useState('Last 30 days');
+    const [dateRange] = useState('Last 30 days');
     
     // Function to simulate data refresh
     const refreshData = () => {

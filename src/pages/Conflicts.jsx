@@ -33,16 +33,16 @@ export default function SummaryPage () {
   };
 
   return (
-    <div className="max--4xl  mx-75 bg-white p-6 rounded-lg">
-      <h1 className="text-3xl font-bold text-[#012169] mb-9">Negotiation</h1>
+    <div className="max-w-4xl mx-auto bg-white p-4 sm:p-6 rounded-lg shadow-sm">
+      <h1 className="text-2xl sm:text-3xl font-bold text-[#012169] mb-6">Negotiation</h1>
 
       {/* Role Selection */}
-      <div className="flex gap-2 mb-6">
+      <div className="flex flex-wrap gap-2 mb-6">
         {Object.entries(roles).map(([key, { name, color }]) => (
           <button
             key={key}
             onClick={() => setActiveRole(key)}
-            className={`px-4 py-2 rounded-full text-sm transition ${
+            className={`px-4 py-2 rounded-full text-xs sm:text-sm transition ${
               activeRole === key ? "ring-2 ring-[#012169]" : "opacity-80 hover:opacity-100"
             } ${color}`}
           >
@@ -61,23 +61,23 @@ export default function SummaryPage () {
             }`}
           >
             <div className="font-semibold">{msg.role === "AI" ? "AI Mediator" : roles[msg.role].name}</div>
-            <p>{msg.text}</p>
+            <p className="text-sm sm:text-base">{msg.text}</p>
           </div>
         ))}
       </div>
 
       {/* Input Field */}
-      <div className="flex space-x-4">
+      <div className="flex flex-col sm:flex-row gap-2 sm:space-x-4">
         <input
           type="text"
           placeholder={`Respond as ${roles[activeRole].name}...`}
-          className="flex-1 p-2 border rounded-lg"
+          className="flex-1 p-2 border rounded-lg text-sm sm:text-base"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleResponse()}
         />
         <button 
-          className="!bg-[#012169] text-white px-4 py-2 rounded-lg hover:bg-[#011a4b] transition"
+          className="!bg-[#012169] text-white px-4 py-2 rounded-lg hover:bg-[#011a4b] transition text-sm sm:text-base"
           onClick={handleResponse}
         >
           Send
@@ -88,7 +88,7 @@ export default function SummaryPage () {
 }
 
 // Mock AI response generator
-function generateAIResponse(input) {
+function generateAIResponse() {
   const responses = [
     "How about we compromise with £10,000 daily limits?",
     "Let me check PCI-DSS compliance for that approach.",

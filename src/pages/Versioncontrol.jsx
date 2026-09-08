@@ -1,13 +1,13 @@
 import { useState } from "react";
 
 export default function VersionControl() {
-  const [versions, setVersions] = useState([
+  const [versions] = useState([
     { version: "v1.0", date: "2025-03-01", changes: "Initial release" },
     { version: "v1.1", date: "2025-03-10", changes: "Bug fixes and improvements" },
     { version: "v1.2", date: "2025-03-20", changes: "New feature added" },
   ]);
 
-  const [currentVersion, setCurrentVersion] = useState("v1.2");
+  const [currentVersion] = useState("v1.2");
 
   return (
     <div className="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow">

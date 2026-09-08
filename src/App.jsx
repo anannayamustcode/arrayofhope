@@ -105,12 +105,12 @@ function Layout() {
   const isNavbarHidden = sidebarRoutes.includes(location.pathname);
 
   return (
-    <div className="min-h-screen flex bg-gray-50">
+    <div className="min-h-screen flex bg-gray-50 overflow-x-hidden">
       {isSidebarVisible && <Sidebar />}
-      <div className="flex-grow flex flex-col">
+      <div className={`flex-grow flex flex-col min-w-0 ${isSidebarVisible ? 'pl-16 sm:pl-20' : ''}`}>
         {!isNavbarHidden && <Navigation />}
-        <main className="container mx-auto px-4 py-8 flex-grow">
-          <div className="bg-white shadow-md rounded-lg p-6">
+        <main className="w-full max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-8 flex-grow">
+          <div className="bg-white shadow-md rounded-lg p-3 sm:p-6 overflow-x-auto">
             <Routes>
               {/* 🔐 Protected Routes */}
               <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />

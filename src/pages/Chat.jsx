@@ -147,9 +147,9 @@ const Chat = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100 ml-10">
+    <div className="flex flex-col md:flex-row min-h-[600px] h-[calc(100vh-6rem)] bg-gray-100 w-full rounded-lg overflow-hidden border">
       {/* Sidebar */}
-      <div className="w-80 bg-white border-r flex flex-col">
+      <div className="w-full md:w-80 bg-white border-b md:border-b-0 md:border-r flex flex-col max-h-60 md:max-h-full">
         <div className="p-4 border-b">
           <h1 className="text-xl font-bold text-blue-600">Genereq Chat</h1>
           <div className="mt-3 relative">

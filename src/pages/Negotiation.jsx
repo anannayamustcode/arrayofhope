@@ -40,12 +40,12 @@ export default function NegotiationPage() {
       <h1 className="text-2xl font-bold text-[#012169] mb-6">Merge Conflicts</h1>
 
       {/* Role Selection */}
-      <div className="flex gap-2 mb-6">
+      <div className="flex flex-wrap gap-2 mb-6">
         {Object.entries(roles).map(([key, { name, color }]) => (
           <button
             key={key}
             onClick={() => setActiveRole(key)}
-            className={`px-4 py-2 rounded-full text-sm transition ${
+            className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm transition ${
               activeRole === key ? "ring-2 ring-[#012169]" : "opacity-80 hover:opacity-100"
             } ${color}`}
           >
@@ -63,26 +63,26 @@ export default function NegotiationPage() {
               msg.role === "AI" ? "bg-gray-200 text-black" : `${roles[msg.role]?.color || "bg-gray-300"}`
             }`}
           >
-            <div className="font-semibold">
+            <div className="font-semibold text-xs sm:text-sm">
               {msg.role === "AI" ? "AI Mediator" : roles[msg.role]?.name || msg.role}
             </div>
-            <p>{msg.text}</p>
+            <p className="text-sm sm:text-base">{msg.text}</p>
           </div>
         ))}
       </div>
 
       {/* Input Field */}
-      <div className="flex space-x-4">
+      <div className="flex flex-col sm:flex-row gap-2 sm:space-x-4">
         <input
           type="text"
           placeholder={`Respond as ${roles[activeRole].name}...`}
-          className="flex-1 p-2 border rounded-lg"
+          className="flex-1 p-2 border rounded-lg text-sm sm:text-base"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleResponse()}
         />
         <button 
-          className="!bg-[#012169] text-white px-4 py-2 rounded-lg hover:bg-[#011a4b] transition"
+          className="!bg-[#012169] text-white px-4 py-2 rounded-lg hover:bg-[#011a4b] transition text-sm sm:text-base"
           onClick={handleResponse}
         >
           Send
@@ -92,7 +92,7 @@ export default function NegotiationPage() {
       {/* Complete Negotiation Button */}
       <div className="mt-6 flex justify-end">
         <button
-          className="!bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition"
+          className="w-full sm:w-auto !bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition text-sm sm:text-base"
           onClick={handleFinishNegotiation}
         >
           Complete Negotiation
@@ -103,7 +103,7 @@ export default function NegotiationPage() {
 }
 
 // Mock AI response generator
-function generateAIResponse(input) {
+function generateAIResponse() {
   const responses = [
     "How about we compromise with £10,000 daily limits?",
     "Let me check PCI-DSS compliance for that approach.",

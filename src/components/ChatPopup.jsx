@@ -8,17 +8,27 @@ export default function ChatPopup() {
   const [input, setInput] = useState("");
 
   const handleSend = () => {
-    if (input.trim()) {
-      setMessages([...messages, { sender: "User", text: input }]);
-      setInput("");
-    }
+    if (!input.trim()) return;
+    const userText = input;
+    setMessages((prev) => [...prev, { sender: "User", text: userText }]);
+    setInput("");
+
+    setTimeout(() => {
+      const aiReplies = [
+        `I have analyzed your query regarding "${userText}". All requirements compliance checks are up to date.`,
+        `Regarding "${userText}": Please ensure multi-factor authentication and AES-256 encryption are enforced.`,
+        `Compliance Note for "${userText}": Audit logging must record all administrative actions and data exports.`
+      ];
+      const reply = aiReplies[Math.floor(Math.random() * aiReplies.length)];
+      setMessages((prev) => [...prev, { sender: "AI", text: reply }]);
+    }, 500);
   };
 
   return (
     <>
       {/* Chat Open Button */}
       <button
-        className="fixed bottom-19 right-6 !bg-[#012169] text-white p-4 !rounded-full shadow-lg hover:bg-[#0038a8] transition-all"
+        className="fixed bottom-6 right-6 !bg-[#012169] text-white p-4 !rounded-full shadow-lg hover:bg-[#0038a8] transition-all z-40"
         onClick={() => setIsOpen(true)}
       >
         💬
@@ -26,7 +36,7 @@ export default function ChatPopup() {
 
       {/* Chat Sidebar */}
       <div
-        className={`fixed top-0 right-0 h-full w-[27%] max-w-sm bg-white shadow-lg border-l transform ${
+        className={`fixed top-0 right-0 h-full w-full sm:w-80 md:w-96 bg-white shadow-2xl border-l z-50 transform ${
           isOpen ? "translate-x-0" : "translate-x-full"
         } transition-transform duration-300 flex flex-col`}
       >
