@@ -151,7 +151,7 @@ const Chat = () => {
       {/* Sidebar */}
       <div className="w-80 bg-white border-r flex flex-col">
         <div className="p-4 border-b">
-          <h1 className="text-xl font-bold text-blue-600">Barclays Chat</h1>
+          <h1 className="text-xl font-bold text-blue-600">Genereq Chat</h1>
           <div className="mt-3 relative">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
             <input

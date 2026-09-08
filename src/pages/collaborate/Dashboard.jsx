@@ -126,7 +126,7 @@
         <header className="bg-white p-4 pl-16 shadow-md flex items-start justify-start">
         <div>
             <h1 className="text-2xl font-bold text-blue-900">Requirements Engineering Dashboard</h1>
-            <p className="text-sm text-gray-500">Barclays Enterprise Solution</p>
+            <p className="text-sm text-gray-500">Genereq Enterprise Solution</p>
           </div>
           
           <div className="flex items-center space-x-4">

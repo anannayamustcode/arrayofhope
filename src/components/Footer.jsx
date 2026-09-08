@@ -19,7 +19,7 @@ export default function Footer() {
           </Link>
         </div>
 
-        <p className="text-sm">&copy; {new Date().getFullYear()} Barclays. All rights reserved.</p>
+        <p className="text-sm">&copy; {new Date().getFullYear()} Genereq. All rights reserved.</p>
       </div>
     </footer>
   );
